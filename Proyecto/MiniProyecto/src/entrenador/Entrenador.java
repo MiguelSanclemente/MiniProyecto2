@@ -1,45 +1,34 @@
 package entrenador;
 
 import pokemon.Pokemon;
+import pokemon.element.ElementPokemon; 
 
 import java.util.Scanner;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 public class Entrenador {
     private String nombre; // Nombre del entrenador
     private Pokemon[] equipo; // Equipo de Pokémon del entrenador
 
-    public void setNameTrainer(Scanner sc) {
-        Pokemon pokemon = new Pokemon();
-
+    public void setNameTrainer(Scanner sc, List<Pokemon> availablePokemons) {
         // Solicitar el nombre del entrenador
         System.out.println("Ingrese el nombre del entrenador:");
         nombre = sc.nextLine();
 
-        // Configurar el equipo del entrenador
-        System.out.println("¿Cómo quieres jugar, " + nombre + "?");
-        System.out.println("1. Pokemones aleatorios");
-        System.out.println("2. Crear tus propios pokemones");
-        int opcion = sc.nextInt();
-        sc.nextLine(); // Consumir el salto de línea pendiente
+        // Asignar equipo aleatorio
+        equipo = new Pokemon[3];
+        Collections.shuffle(availablePokemons);
 
-        switch (opcion) {
-            case 1 -> {
-                // Generar equipo aleatorio
-                equipo = pokemon.randomPokemonTeam(3);
-                System.out.println("Equipo generado para " + nombre + ":");
-                for (Pokemon p : equipo) {
-                    System.out.println("- " + p.getNamePokemon() + " (HP: " + p.getHP() + ", Tipo: " + p.getTypePokemon() + ")");
-                }
-            }
-            case 2 -> {
-                // Crear equipo personalizado
-                pokemon.createPokemon(sc);
-                equipo = pokemon.getPokemons(); // Asignar el equipo creado
-            }
-            default -> {
-                System.out.println("Opción no válida. Se generará un equipo aleatorio por defecto.");
-                equipo = pokemon.randomPokemonTeam(3);
-            }
+        for (int i = 0; i < equipo.length; i++) {
+            equipo[i] = availablePokemons.remove(0); // Remover el Pokémon asignado
+        }
+
+        System.out.println("Equipo asignado a " + nombre + ":");
+        for (Pokemon p : equipo) {
+            System.out.println("- " + p.getNamePokemon() + " (HP: " + p.getHP() + ", Tipo: " + p.getTypePokemon() + ")");
         }
     }
 
