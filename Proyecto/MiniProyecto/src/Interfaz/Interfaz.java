@@ -178,7 +178,6 @@ public class Interfaz extends JFrame {
 
         add(panelCentral, BorderLayout.CENTER);
 
-        
         continuarButton = new JButton("Continuar");
         continuarButton.setEnabled(false); // Deshabilitado hasta que ambos seleccionen habilidades
         continuarButton.addActionListener(e -> {
@@ -187,7 +186,6 @@ public class Interfaz extends JFrame {
         });
         add(continuarButton, BorderLayout.SOUTH);
 
-       
         revalidate();
         repaint();
     }
@@ -210,7 +208,7 @@ public class Interfaz extends JFrame {
         panelHabilidades.setLayout(new GridLayout(2, 2, 5, 5));
 
         for (Ataque ataque : pokemon.getAtaque()) {
-            JRadioButton botonAtaque = new JRadioButton(ataque.getNameAtaque() + " (Potencia: " + ataque.getPower() + ")");
+            JRadioButton botonAtaque = new JRadioButton(ataque.getNameAtaque() + " (Daño: " + ataque.getPower() + ")");
             botonAtaque.setActionCommand(ataque.getNameAtaque()); // Guardar el nombre del ataque
             grupoHabilidades.add(botonAtaque);
             panelHabilidades.add(botonAtaque);
@@ -254,6 +252,7 @@ public class Interfaz extends JFrame {
         int dañoPrimero = ataquePrimero.getPower();
         if (primero.getTypePokemon().isStrongAgainst(segundo.getTypePokemon())) {
             dañoPrimero += dañoPrimero * 0.3; // Aumentar el daño en un 30% por ventaja de tipo
+            JOptionPane.showMessageDialog(this, "¡Ventaja de tipo! El ataque de " + primero.getNamePokemon() + " es más efectivo.");
         }
 
         // Mostrar el ataque del primer Pokémon
@@ -271,6 +270,7 @@ public class Interfaz extends JFrame {
         int dañoSegundo = ataqueSegundo.getPower();
         if (segundo.getTypePokemon().isStrongAgainst(primero.getTypePokemon())) {
             dañoSegundo += dañoSegundo * 0.3; // Aumentar el daño en un 30% por ventaja de tipo
+            JOptionPane.showMessageDialog(this, "¡Ventaja de tipo! El ataque de " + segundo.getNamePokemon() + " es más efectivo.");
         }
 
         // Mostrar el ataque del segundo Pokémon
@@ -306,10 +306,18 @@ public class Interfaz extends JFrame {
     private void avanzarAlSiguientePokemon(Pokemon pokemonDerrotado) {
         if (pokemonDerrotado == entrenador1.getEquipo()[0]) {
             entrenador1.getEquipo()[0] = obtenerSiguientePokemon(entrenador1);
-            actualizarPanelPokemon(entrenador1.getNombre(), entrenador1.getEquipo()[0], grupoHabilidades1);
         } else {
             entrenador2.getEquipo()[0] = obtenerSiguientePokemon(entrenador2);
-            actualizarPanelPokemon(entrenador2.getNombre(), entrenador2.getEquipo()[0], grupoHabilidades2);
+        }
+
+        // Verificar si el juego ha terminado
+        if (entrenador1.getEquipo()[0] == null || entrenador2.getEquipo()[0] == null) {
+            String ganador = (entrenador1.getEquipo()[0] == null) ? entrenador2.getNombre() : entrenador1.getNombre();
+            JOptionPane.showMessageDialog(this, "¡" + ganador + " ha ganado la batalla!");
+            System.exit(0); // Cerrar el programa
+        } else {
+            // Reiniciar la ventana con los Pokémon actualizados
+            reiniciarVentana();
         }
     }
 
@@ -320,8 +328,7 @@ public class Interfaz extends JFrame {
             }
         }
         JOptionPane.showMessageDialog(this, entrenador.getNombre() + " se ha quedado sin Pokémon. ¡El juego ha terminado!");
-        System.exit(0); // Terminar el juego si no quedan Pokémon
-        return null;
+        return null; // Devuelve null si no quedan Pokémon
     }
 
     private void actualizarPanelPokemon(String nombreEntrenador, Pokemon pokemon, ButtonGroup grupoHabilidades) {
@@ -343,6 +350,36 @@ public class Interfaz extends JFrame {
         // Actualizar la ventana
         revalidate();
         repaint();
+    }
+
+    private void eliminarPanelPokemon(ButtonGroup grupoHabilidades) {
+        if (grupoHabilidades == grupoHabilidades1) {
+            getContentPane().remove(1); // Eliminar el panel del primer Pokémon
+        } else {
+            getContentPane().remove(2); // Eliminar el panel del segundo Pokémon
+        }
+
+        // Actualizar la ventana
+        revalidate();
+        repaint();
+    }
+
+    private void reiniciarVentana() {
+        // Cerrar la ventana actual
+        dispose();
+
+        // Crear una nueva instancia de la ventana
+        Interfaz nuevaVentana = new Interfaz();
+        nuevaVentana.setEntrenadores(entrenador1, entrenador2); // Pasar los entrenadores actuales
+        nuevaVentana.setVisible(true);
+    }
+
+    public void setEntrenadores(Entrenador entrenador1, Entrenador entrenador2) {
+        this.entrenador1 = entrenador1;
+        this.entrenador2 = entrenador2;
+
+        // Reiniciar la batalla con los Pokémon actualizados
+        iniciarBatalla();
     }
 
     public static void main(String[] args) {
