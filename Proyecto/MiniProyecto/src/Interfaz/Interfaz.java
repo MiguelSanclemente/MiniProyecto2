@@ -8,7 +8,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import pokemon.ataque.Ataque;
 
@@ -22,6 +24,7 @@ public class Interfaz extends JFrame {
     private ButtonGroup grupoHabilidades1;
     private ButtonGroup grupoHabilidades2;
     private JButton continuarButton; 
+
     public Interfaz() {
         setTitle("Batalla Pokémon");
         setSize(800, 600);
@@ -175,7 +178,7 @@ public class Interfaz extends JFrame {
 
         add(panelCentral, BorderLayout.CENTER);
 
-        // Botón para continuar
+        
         continuarButton = new JButton("Continuar");
         continuarButton.setEnabled(false); // Deshabilitado hasta que ambos seleccionen habilidades
         continuarButton.addActionListener(e -> {
@@ -184,7 +187,7 @@ public class Interfaz extends JFrame {
         });
         add(continuarButton, BorderLayout.SOUTH);
 
-        // Actualizar la ventana
+       
         revalidate();
         repaint();
     }
@@ -235,7 +238,6 @@ public class Interfaz extends JFrame {
         String habilidad1 = grupoHabilidades1.getSelection().getActionCommand();
         String habilidad2 = grupoHabilidades2.getSelection().getActionCommand();
 
-        // Obtener los ataques seleccionados
         Ataque ataque1 = obtenerAtaquePorNombre(pokemon1, habilidad1);
         Ataque ataque2 = obtenerAtaquePorNombre(pokemon2, habilidad2);
 
@@ -245,27 +247,40 @@ public class Interfaz extends JFrame {
 
         Pokemon primero = velocidad1 >= velocidad2 ? pokemon1 : pokemon2;
         Pokemon segundo = primero == pokemon1 ? pokemon2 : pokemon1;
-
         Ataque ataquePrimero = primero == pokemon1 ? ataque1 : ataque2;
         Ataque ataqueSegundo = primero == pokemon1 ? ataque2 : ataque1;
 
+        // Calcular el daño del primer ataque
+        int dañoPrimero = ataquePrimero.getPower();
+        if (primero.getTypePokemon().isStrongAgainst(segundo.getTypePokemon())) {
+            dañoPrimero += dañoPrimero * 0.3; // Aumentar el daño en un 30% por ventaja de tipo
+        }
+
         // Mostrar el ataque del primer Pokémon
         JOptionPane.showMessageDialog(this, primero.getNamePokemon() + " usa " + ataquePrimero.getNameAtaque() + " y ataca primero.");
-        segundo.setHP((short) (segundo.getHP() - ataquePrimero.getPower())); // Reducir HP del segundo Pokémon
+        segundo.setHP((short) (segundo.getHP() - dañoPrimero)); // Reducir HP del segundo Pokémon
 
         // Verificar si el segundo Pokémon ha sido derrotado
         if (segundo.getHP() <= 0) {
             JOptionPane.showMessageDialog(this, segundo.getNamePokemon() + " ha sido derrotado.");
+            avanzarAlSiguientePokemon(segundo);
             return; // Terminar el turno si el segundo Pokémon es derrotado
+        }
+
+        // Calcular el daño del segundo ataque
+        int dañoSegundo = ataqueSegundo.getPower();
+        if (segundo.getTypePokemon().isStrongAgainst(primero.getTypePokemon())) {
+            dañoSegundo += dañoSegundo * 0.3; // Aumentar el daño en un 30% por ventaja de tipo
         }
 
         // Mostrar el ataque del segundo Pokémon
         JOptionPane.showMessageDialog(this, segundo.getNamePokemon() + " usa " + ataqueSegundo.getNameAtaque() + ".");
-        primero.setHP((short) (primero.getHP() - ataqueSegundo.getPower())); // Reducir HP del primer Pokémon
+        primero.setHP((short) (primero.getHP() - dañoSegundo)); // Reducir HP del primer Pokémon
 
         // Verificar si el primer Pokémon ha sido derrotado
         if (primero.getHP() <= 0) {
             JOptionPane.showMessageDialog(this, primero.getNamePokemon() + " ha sido derrotado.");
+            avanzarAlSiguientePokemon(primero);
         } else {
             // Mostrar el estado de ambos Pokémon
             JOptionPane.showMessageDialog(this,
@@ -288,6 +303,48 @@ public class Interfaz extends JFrame {
         throw new IllegalArgumentException("Ataque no encontrado: " + nombreAtaque);
     }
 
+    private void avanzarAlSiguientePokemon(Pokemon pokemonDerrotado) {
+        if (pokemonDerrotado == entrenador1.getEquipo()[0]) {
+            entrenador1.getEquipo()[0] = obtenerSiguientePokemon(entrenador1);
+            actualizarPanelPokemon(entrenador1.getNombre(), entrenador1.getEquipo()[0], grupoHabilidades1);
+        } else {
+            entrenador2.getEquipo()[0] = obtenerSiguientePokemon(entrenador2);
+            actualizarPanelPokemon(entrenador2.getNombre(), entrenador2.getEquipo()[0], grupoHabilidades2);
+        }
+    }
+
+    private Pokemon obtenerSiguientePokemon(Entrenador entrenador) {
+        for (Pokemon pokemon : entrenador.getEquipo()) {
+            if (pokemon.getHP() > 0) {
+                return pokemon;
+            }
+        }
+        JOptionPane.showMessageDialog(this, entrenador.getNombre() + " se ha quedado sin Pokémon. ¡El juego ha terminado!");
+        System.exit(0); // Terminar el juego si no quedan Pokémon
+        return null;
+    }
+
+    private void actualizarPanelPokemon(String nombreEntrenador, Pokemon pokemon, ButtonGroup grupoHabilidades) {
+        // Limpiar el grupo de botones
+        grupoHabilidades.clearSelection();
+
+        // Crear un nuevo panel para el Pokémon
+        JPanel panel = crearPanelPokemon(nombreEntrenador, pokemon, grupoHabilidades);
+
+        // Reemplazar el panel existente en la interfaz
+        if (grupoHabilidades == grupoHabilidades1) {
+            getContentPane().remove(1); // Eliminar el panel del primer Pokémon
+            add(panel, BorderLayout.WEST);
+        } else {
+            getContentPane().remove(2); // Eliminar el panel del segundo Pokémon
+            add(panel, BorderLayout.EAST);
+        }
+
+        // Actualizar la ventana
+        revalidate();
+        repaint();
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             Interfaz interfaz = new Interfaz();
@@ -295,3 +352,5 @@ public class Interfaz extends JFrame {
         });
     }
 }
+
+
