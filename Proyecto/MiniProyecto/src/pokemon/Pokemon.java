@@ -16,7 +16,14 @@ public class Pokemon {
     String namePokemon;
     short hp;
     TipoPokemon typePokemon;
-    Ataque [] ataque = new Ataque[4];
+    Ataque[] ataque = new Ataque[4];
+
+    // Nuevas estadísticas
+    private int ataqueFisico; // Ataque físico (At)
+    private int defensa; // Defensa (Df)
+    private int ataqueEspecial; // Ataque Especial (AtS)
+    private int defensaEspecial; // Defensa Especial (DeS)
+    private int velocidad; // Velocidad
 
     private Pokemon[] pokemons = new Pokemon[3]; // Equipo de Pokémon creado
     ElementPokemon element = new ElementPokemon();
@@ -48,11 +55,15 @@ public class Pokemon {
         }
     }
 
-    public Pokemon(String namePokemon, short hp, TipoPokemon typePokemon, Ataque[] ataque) {
+    public Pokemon(String namePokemon, short hp, TipoPokemon typePokemon, Ataque[] ataques, int ataque, int defensa, int ataqueEspecial, int defensaEspecial, int velocidad) {
         this.namePokemon = namePokemon;
         this.hp = hp;
         this.typePokemon = typePokemon;
-        this.ataque = ataque;
+        this.ataque = ataques;
+        this.defensa = defensa;
+        this.ataqueEspecial = ataqueEspecial;
+        this.defensaEspecial = defensaEspecial;
+        this.velocidad = velocidad;
     }
 
     public String getNamePokemon() {
@@ -83,12 +94,33 @@ public class Pokemon {
         return pokemon;
     }
 
-    public Ataque[] getAtaque() {
+    public Ataque[] getAtaques() {
         return ataque;
     }
 
     public Pokemon[] getPokemons() {
         return pokemons;
+    }
+
+    // Getters para las nuevas estadísticas
+    public Ataque[] getAtaque() {
+        return ataque;
+    }
+
+    public int getDefensa() {
+        return defensa;
+    }
+
+    public int getAtaqueEspecial() {
+        return ataqueEspecial;
+    }
+
+    public int getDefensaEspecial() {
+        return defensaEspecial;
+    }
+
+    public int getVelocidad() {
+        return velocidad;
     }
 
     public void menuPokemon(Scanner sc, String[] Trainers){
@@ -97,7 +129,7 @@ public class Pokemon {
         sc.nextLine();
         switch (opcion) {
             case 1 -> {randomPokemon();}
-            case 2 -> {createPokemon(sc);}
+            
         }
     }
  
@@ -143,7 +175,8 @@ public class Pokemon {
             return (TipoAtaque.values()[rand.nextInt(1,2)]).name();
     }
 
-
+// No es necesaria ya esta funcion 
+/* 
     public void createPokemon(Scanner sc) {
         for (int i = 0; i < pokemons.length; i++) {
             pokemons[i] = new Pokemon();
@@ -174,6 +207,8 @@ public class Pokemon {
             }
         }
     }
+
+    
 
     // Método para obtener 4 ataques aleatorios del tipo correspondiente
     private Ataque[] obtenerAtaquesAleatorios(TipoPokemon tipoPokemon) {
@@ -231,4 +266,5 @@ public class Pokemon {
         }
         return ataques;
     }
+    */
 }

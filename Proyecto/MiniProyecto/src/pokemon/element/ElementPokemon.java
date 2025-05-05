@@ -57,23 +57,20 @@ public class ElementPokemon {
 
     public static void initializePokemons() {
         pokemon = new Pokemon[] {
-            new Pokemon("Charizard", (short) 282, Pokemon.TipoPokemon.FUEGO, new Ataque[] {fireMoves[0], fireMoves[1], fireMoves[2], fireMoves[3]}),
-            new Pokemon("Flareon", (short) 198, Pokemon.TipoPokemon.FUEGO, new Ataque[] {fireMoves[1], fireMoves[2], fireMoves[3], fireMoves[4]}),
+            new Pokemon("Charizard", (short) 282, Pokemon.TipoPokemon.FUEGO, new Ataque[] {fireMoves[0], fireMoves[1], fireMoves[2], fireMoves[3]}, 84, 78, 109, 85, 100),
+            new Pokemon("Flareon", (short) 198, Pokemon.TipoPokemon.FUEGO, new Ataque[] {fireMoves[1], fireMoves[2], fireMoves[3], fireMoves[4]}, 130, 60, 95, 110, 65),
 
-            new Pokemon("Blastoise", (short) 292, Pokemon.TipoPokemon.AGUA, new Ataque[] {waterMoves[0], waterMoves[1], waterMoves[2], waterMoves[3]}),
-            new Pokemon("Vaporeon", (short) 214, Pokemon.TipoPokemon.AGUA, new Ataque[] {waterMoves[1], waterMoves[2], waterMoves[3], waterMoves[4]}),
+            new Pokemon("Blastoise", (short) 292, Pokemon.TipoPokemon.AGUA, new Ataque[] {waterMoves[0], waterMoves[1], waterMoves[2], waterMoves[3]}, 83, 100, 85, 105, 78),
+            new Pokemon("Vaporeon", (short) 214, Pokemon.TipoPokemon.AGUA, new Ataque[] {waterMoves[1], waterMoves[2], waterMoves[3], waterMoves[4]}, 65, 60, 110, 95, 65),
 
-            new Pokemon("Venasaur", (short) 271, Pokemon.TipoPokemon.PLANTA, new Ataque[] {grassMoves[0], grassMoves[1], grassMoves[2], grassMoves[3]}),
-            new Pokemon("Leafeon", (short) 194, Pokemon.TipoPokemon.PLANTA, new Ataque[] {grassMoves[1], grassMoves[2], grassMoves[3], grassMoves[4]}),
+            new Pokemon("Venasaur", (short) 271, Pokemon.TipoPokemon.PLANTA, new Ataque[] {grassMoves[0], grassMoves[1], grassMoves[2], grassMoves[3]}, 82, 83, 100, 100, 80),
+            new Pokemon("Leafeon", (short) 194, Pokemon.TipoPokemon.PLANTA, new Ataque[] {grassMoves[1], grassMoves[2], grassMoves[3], grassMoves[4]}, 110, 130, 60, 65, 95),
 
-            new Pokemon("Sandslash", (short) 324, Pokemon.TipoPokemon.TIERRA, new Ataque[] {groundMoves[0], groundMoves[1], groundMoves[2], groundMoves[3]}),
-            new Pokemon("Nidoking", (short) 344, Pokemon.TipoPokemon.TIERRA, new Ataque[] {groundMoves[1], groundMoves[2], groundMoves[3], groundMoves[4]}),
-            new Pokemon("Hippowdon", (short) 350, Pokemon.TipoPokemon.TIERRA, new Ataque[] {groundMoves[0], groundMoves[1], groundMoves[2], groundMoves[3]}),
-            new Pokemon("Rhyperior", (short) 350, Pokemon.TipoPokemon.TIERRA, new Ataque[] {groundMoves[1], groundMoves[2], groundMoves[3], groundMoves[4]}),
+            new Pokemon("Sandslash", (short) 324, Pokemon.TipoPokemon.TIERRA, new Ataque[] {groundMoves[0], groundMoves[1], groundMoves[2], groundMoves[3]}, 100, 110, 45, 55, 65),
+            new Pokemon("Nidoking", (short) 344, Pokemon.TipoPokemon.TIERRA, new Ataque[] {groundMoves[1], groundMoves[2], groundMoves[3], groundMoves[4]}, 102, 77, 85, 75, 85),
 
-            new Pokemon("Pikachu", (short) 176, Pokemon.TipoPokemon.ELECTRICO, new Ataque[] {electricMoves[0], electricMoves[2], electricMoves[1], electricMoves[4]}),
-            new Pokemon("Kilowattrel", (short) 208, Pokemon.TipoPokemon.ELECTRICO, new Ataque[] {electricMoves[1], electricMoves[3], electricMoves[0], electricMoves[4]}),
-            new Pokemon("Zapdos", (short) 274, Pokemon.TipoPokemon.ELECTRICO, new Ataque[] {electricMoves[3], electricMoves[4], electricMoves[2], electricMoves[1]})
+            new Pokemon("Pikachu", (short) 176, Pokemon.TipoPokemon.ELECTRICO, new Ataque[] {electricMoves[0], electricMoves[2], electricMoves[1], electricMoves[4]}, 55, 40, 50, 50, 90),
+            new Pokemon("Zapdos", (short) 274, Pokemon.TipoPokemon.ELECTRICO, new Ataque[] {electricMoves[3], electricMoves[4], electricMoves[2], electricMoves[1]}, 90, 85, 125, 90, 100)
         };
     }
 
@@ -166,14 +163,10 @@ public class ElementPokemon {
     public static void main(String[] args) {
         ElementPokemon.initializeData();
 
-        Scanner sc = new Scanner(System.in);
-        ElementPokemon element = new ElementPokemon();
-
-        // Crear ataques personalizados
-        Ataque[] ataquesPersonalizados = element.createAtaques(sc);
-
-        // Asignar los ataques personalizados a un Pokémon
-        Pokemon pokemonPersonalizado = new Pokemon("Pokemon Personalizado", (short) 200, Pokemon.TipoPokemon.FUEGO, ataquesPersonalizados);
+        // Mostrar los Pokémon inicializados
+        for (Pokemon p : getPokemon()) {
+            System.out.println("- " + p.getNamePokemon() + " (HP: " + p.getHP() + ", Tipo: " + p.getTypePokemon() + ")");
+        }
     }
 
     public static Pokemon[] getPokemon() {
